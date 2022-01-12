@@ -1148,11 +1148,13 @@ void CountLetters(FILE* File, int* a)//считаем кол-во символов в строке
 int CountLines(FILE* File)//считаем строки
 {
 	int lines = 1;
-	rewind(File);
+	rewind(File); //указатель положени€ файла в начальное положение
 	unsigned char c = fgetc(File);
-	if (File == NULL) return 0;
+	if (File == NULL) 
+		return 0;
 	while (!feof(File))
-		if (c = fgetc(File) == '\n') lines++;
+		if (c = fgetc(File) == '\n') 
+			lines++;
 	if (ferror(File))
 	{
 		printf("File error\n");
@@ -1160,7 +1162,7 @@ int CountLines(FILE* File)//считаем строки
 	}
 	return lines;
 }
-//кек
+
 
 void RenameVariables()
 {
@@ -1338,14 +1340,16 @@ void CreateVariables(FILE* Read)
 		char GetWord[6];
 		for (int i = 0; i < 6; i++) 
 			GetWord[i] = 0;
-	MarkOutside:
+		MarkOutside:
+		//внутри объ€влени€ переменных
 		for (int i = 0; i < 5 && !feof(Read); i++) //записываем название переменной
 			GetWord[i] = fgetc(Read);
 		//если это название функций
 		if (strstr(GetWord, "void") || strstr(GetWord, "int") || strstr(GetWord, "char") || strstr(GetWord, "float") || strstr(GetWord, "FILE"))
 		{
 			char s1;
-	MarkInside:
+		MarkInside:
+		//вне объ€влении переменных
 			s1 = '0';
 			int i = 0;
 			//isspace - провер€ет наличие пробела 
@@ -1367,8 +1371,8 @@ void CreateVariables(FILE* Read)
 
 				if (s1 == '(') FlagFunction = 1; //находимс€ в объ€влении переменных, передаваемых в функции
 				else if (s1 == ')') FlagFunction = 0; // не находимс€ в объ€влении переменных, передаваемых в функции
-				else if (s1 == ',' && FlagFunction == 1) goto MarkOutside;
-				else if (s1 == ',' && FlagFunction == 0) goto MarkInside;
+				else if (s1 == ',' && FlagFunction == 1) goto MarkOutside; //зап€та€ в объ€влении переменных
+				else if (s1 == ',' && FlagFunction == 0) goto MarkInside; //зап€та€ не в объ€влении переменных
 				else if (s1 == '{')
 					while ((s1 = fgetc(Read)) != '}');
 			}
@@ -1381,16 +1385,18 @@ void CreateVariables(FILE* Read)
 	}
 	fclose(Before);
 	fopen_s(&Lines, "Before.txt", "r");
-	LinesCount = CountLines(Lines);
+	LinesCount = CountLines(Lines); //количество строк
 	fclose(Lines);
 	for (int i = 0; i < LinesCount - 1; i++)
 	{
-		int Length = rand() % 20 + 5;
+		int Length = rand() % 20 + 5; //длина строк
 		for (int j = 0; j < Length; j++)
 		{
 			unsigned char c;
-			if (j % 3 == 0) c = rand() % 25 + 65;
-			else if (j % 3 == 1) c = rand() % 25 + 97;
+			if (j % 3 == 0) 
+				c = rand() % 25 + 65;
+			else if (j % 3 == 1) 
+				c = rand() % 25 + 97;
 			else c = rand() % 9 + 48;
 			fprintf(After, "%c", c);
 		}
