@@ -1326,7 +1326,6 @@ void RenameVariables()
 	free(Modify);
 	Modify = NULL;
 }
-
 void CreateVariables(FILE* Read)
 {
 	FILE* Before;
@@ -1378,6 +1377,7 @@ void CreateVariables(FILE* Read)
 					while ((s1 = fgetc(Read)) != '}');
 			}
 		}
+	
 		else if (!feof(Read)) 
 			//fseek - меняем позицию в файле назад
 			fseek(Read, -4, SEEK_CUR);
@@ -1391,7 +1391,7 @@ void CreateVariables(FILE* Read)
 	for (int i = 0; i < LinesCount - 1; i++)
 	{
 		int Length = rand() % 20 + 5; //длина строк
-		for (int j = 0; j < Length; j++) //переименовываем слова в строке
+		for (int j = 0; j < Length; j++) //переименовываем названия функций 
 		{
 			unsigned char c;
 			if (j % 3 == 0) 
@@ -1400,7 +1400,7 @@ void CreateVariables(FILE* Read)
 				c = rand() % 25 + 97;
 			else 
 				c = rand() % 9 + 48;
-			fprintf(After, "%c", c);
+			fprintf(After, "%c", c); //записываем новые названия функций
 		}
 		fprintf(After, "\n");
 	}
