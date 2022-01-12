@@ -1160,6 +1160,7 @@ int CountLines(FILE* File)//считаем строки
 	}
 	return lines;
 }
+//кек
 
 void RenameVariables()
 {
