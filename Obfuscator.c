@@ -1291,16 +1291,17 @@ void CreateVariables(FILE* Read)
 		{
 			GetWord[i] = fgetc(Read);
 		}
-		//если это название функций
+		printf("%s\n", GetWord);
+		//если это тип функций
 		if (strstr(GetWord, "void") || strstr(GetWord, "int") || strstr(GetWord, "char") || strstr(GetWord, "float") || strstr(GetWord, "FILE"))
 		{
 			char s1;
 		MarkInside:
-		//вне объ€влении переменных
+		//сюда заходим только в том случае, если GetWord - включает в себ€ тип функции
 			s1 = '0';
 			int i = 0;
 			//isspace - провер€ет наличие пробела 
-			while (isspace(s1 = fgetc(Read)) || s1 == '*') 
+			while (isspace(s1 = fgetc(Read)) || s1 == '*') //доходим до начала названи€ функции
 				i++;
 			//isalpha - провер€ет €вл€етс€ ли буква
 			if ((isalpha(s1) || s1 == '_') && (i != 0))
@@ -1312,14 +1313,17 @@ void CreateVariables(FILE* Read)
 					s1 = fgetc(Read);
 				}
 				fprintf(Before, "\n"); 
-				//strchr - первое вхождение символа в строку
-				while (strchr("(),;{}", s1) == NULL) 
+				//strchr - первое совпадение символа s1 со строкой\
+				находим открытую или закрытую скобку или зап€тую или точку с зап€той
+				while (strchr("(),;{}", s1) == NULL)
+				{
 					s1 = fgetc(Read);
+				}
 
 				if (s1 == '(') FlagFunction = 1; //находимс€ в объ€влении переменных, передаваемых в функции
 				else if (s1 == ')') FlagFunction = 0; // не находимс€ в объ€влении переменных, передаваемых в функции
-				else if (s1 == ',' && FlagFunction == 1) goto MarkOutside; //зап€та€ в объ€влении переменных
-				else if (s1 == ',' && FlagFunction == 0) goto MarkInside; //зап€та€ не в объ€влении переменных
+				else if (s1 == ',' && FlagFunction == 1) goto MarkOutside; 
+				else if (s1 == ',' && FlagFunction == 0) goto MarkInside; 
 				else if (s1 == '{')
 					while ((s1 = fgetc(Read)) != '}');
 			}
@@ -1333,12 +1337,12 @@ void CreateVariables(FILE* Read)
 	}
 	fclose(Before);
 	fopen_s(&Lines, "Before.txt", "r");
-	LinesCount = CountLines(Lines); //количество строк
+	LinesCount = CountLines(Lines); //количество строк = количество функций и переменных
 	fclose(Lines);
 	for (int i = 0; i < LinesCount - 1; i++)
 	{
 		int Length = rand() % 20 + 5; //длина строк
-		for (int j = 0; j < Length; j++) //переименовываем названи€ функций 
+		for (int j = 0; j < Length; j++) //переименовываем названи€ функций и переменных
 		{
 			unsigned char c;
 			if (j % 3 == 0) 
