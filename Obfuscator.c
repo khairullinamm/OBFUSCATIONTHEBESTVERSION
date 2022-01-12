@@ -25,7 +25,7 @@ struct CyclesVariables
 	char FunName[100];//имя функции
 };
 
-/*void Function_Or_Var_Rewrite(FILE* First, FILE* Second, int* fun, int* i, char* Check)
+void Function_Or_Var_Rewrite(FILE* First, FILE* Second, int* fun, int* i, char* Check)
 {
 	int k = -1;
 	char g;
@@ -104,7 +104,7 @@ struct CyclesVariables
 	}
 	free(TakeCare);
 	TakeCare = NULL;
-}*/
+}
 
 void DeleteSpaces(FILE* First, FILE* Second)
 {
@@ -202,117 +202,6 @@ void DeleteSpaces(FILE* First, FILE* Second)
 	fclose(First);
 	fclose(Second);
 }
-
-/*int GenerateFunctionFiles(FILE* First, FILE* Second)
-{
-	int c;
-	int i = 0;//вхождение в функцию
-	int fun = 0;//кол-во функций
-
-	while ((c = fgetc(First)) != EOF && !feof(First))
-	{
-
-		if (c == '{') i++;
-		else if (c == '}') i--;
-
-		else if (i == 0 && c == 'd')//потенциально double
-		{
-			char Check[8];
-			for (int j = 0; j < 3; j++) Check[j] = '\0';
-			Check[0] = c;
-			for (int j = 1; strstr("double ", Check) && j < 7; j++) Check[j] = fgetc(First);
-			if (strcmp("double ", Check) == 0 || strcmp("double*", Check) == 0) Function_Or_Var_Rewrite(First, Second, &fun, &i, &Check[0]);
-		}
-
-		else if (i == 0 && c == 's')//потенциально структура
-		{
-			char Check[8];
-			for (int j = 0; j < 8; j++) Check[j] = '\0';
-			Check[0] = c;
-			for (int j = 1; strstr("struct ", Check) && j < 7; j++) Check[j] = fgetc(First);
-			if (strcmp("struct ", Check) == 0)
-			{
-				int k = -1;
-				char g;
-				while ((g = fgetc(First)) != '{' && g != ')')
-				{
-					if (g == '\n') k--;
-					k--;
-				}
-				if (g == '{')
-				{
-					fseek(First, k, SEEK_CUR);
-					fprintf(Second, "\n%s", Check);
-					while ((g = fgetc(First)) != ';' || i > 0)
-					{
-						fputc(g, Second);
-						if (g == '{') i++;
-						if (g == '}') i--;
-					}
-					fputc(g, Second);
-				}
-			}
-		}
-
-		else if (i == 0 && c == 'f')//потенциально float
-		{
-			char Check[7];
-			for (int j = 0; j < 7; j++) Check[j] = '\0';
-			Check[0] = c;
-			for (int j = 1; strstr("float ", Check) && j < 6; j++) Check[j] = fgetc(First);
-			if (strcmp("float ", Check) == 0 || strcmp("float*", Check) == 0) Function_Or_Var_Rewrite(First, Second, &fun, &i, &Check[0]);
-		}
-
-		else if (i == 0 && c == 'l')
-		{
-			char Check[6];
-			for (int j = 0; j < 6; j++) Check[j] = '\0';
-			Check[0] = c;
-			for (int j = 1; strstr("long ", Check) && j < 5; j++) Check[j] = fgetc(First);
-			if (strcmp("long ", Check) == 0 || strcmp("long*", Check) == 0) Function_Or_Var_Rewrite(First, Second, &fun, &i, &Check[0]);
-		}
-
-		else if (i == 0 && c == 'c')//потенциально char
-		{
-			char Check[6];
-			for (int j = 0; j < 6; j++) Check[j] = '\0';
-			Check[0] = c;
-			for (int j = 1; strstr("char ", Check) && j < 5; j++) Check[j] = fgetc(First);
-			if (strcmp("char ", Check) == 0 || strcmp("char*", Check) == 0) Function_Or_Var_Rewrite(First, Second, &fun, &i, &Check[0]);
-		}
-
-		else if (i == 0 && c == 'i')//потенциально int
-		{
-			char Check[5];
-			for (int j = 0; j < 5; j++)Check[j] = '\0';
-			Check[0] = c;
-			for (int j = 1; strstr("int ", Check) && j < 4; j++) Check[j] = fgetc(First);
-			if (strcmp("int ", Check) == 0 || strcmp("int*", Check) == 0) Function_Or_Var_Rewrite(First, Second, &fun, &i, &Check[0]);
-		}
-
-		else if (i == 0 && c == 'v')//потенциально void
-		{
-			char Check[6];
-			for (int j = 0; j < 6; j++) Check[j] = '\0';
-			Check[0] = c;
-			for (int j = 1; strstr("void ", Check) && j < 5; j++) Check[j] = fgetc(First);
-			if (strcmp("void ", Check) == 0) Function_Or_Var_Rewrite(First, Second, &fun, &i, &Check[0]);
-		}
-
-		else if (c == '#')
-		{
-			do
-			{
-				fputc(c, Second);
-			} while ((c = fgetc(First)) != '\n');
-			fputc(c, Second);
-		}
-
-	}
-	fclose(First);
-	fclose(Second);
-	return fun;
-}*/
 
 int GenerateFunctionFiles(FILE* First, FILE* Second)
 {
