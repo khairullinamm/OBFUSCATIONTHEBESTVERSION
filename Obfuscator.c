@@ -5,6 +5,9 @@
 #include <ctype.h>
 #include <time.h>
 
+
+//MEM TEST 1
+
 struct LIST
 {
 	unsigned char* before;
