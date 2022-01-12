@@ -10,7 +10,7 @@ struct LIST
 	unsigned char* before;
 	unsigned char* after;
 };
-
+//kek
 struct CyclesVariables
 {
 	char ConStart[100];//начало
