@@ -1035,7 +1035,7 @@ void GenerateCycles(int j, struct CyclesVariables* Generate)
 		//Генерируем цикл 
 		if (Rand % 3 == 0)
 		{
-			strcat(Generate[i].ConStart, "if(");
+			strcat(Generate[i].ConStart, "if("); //присоединяет к Generate[i].ConStart "if("
 			strcat(Generate[i].ConEnd, ")");
 		}
 		else if (Rand % 3 == 1)
@@ -1051,6 +1051,7 @@ void GenerateCycles(int j, struct CyclesVariables* Generate)
 
 		Length = rand() % 10 + 5;//длина имени
 		l = 0;
+
 		//Геенрируем имя переменной
 		for (int k = 0; k < Length; k++, l++)
 		{
@@ -1359,7 +1360,7 @@ void CreateVariables(FILE* Read)
 			if ((isalpha(s1) || s1 == '_') && (i != 0))
 			{
 				//isdigit - десятичн цифра
-				while (isalpha(s1) || isdigit(s1) || s1 == '_')
+				while (isalpha(s1) || isdigit(s1) || s1 == '_') //записываем название функции в файл before
 				{
 					fprintf(Before, "%c", s1);
 					s1 = fgetc(Read);
@@ -1390,14 +1391,15 @@ void CreateVariables(FILE* Read)
 	for (int i = 0; i < LinesCount - 1; i++)
 	{
 		int Length = rand() % 20 + 5; //длина строк
-		for (int j = 0; j < Length; j++)
+		for (int j = 0; j < Length; j++) //переименовываем слова в строке
 		{
 			unsigned char c;
 			if (j % 3 == 0) 
 				c = rand() % 25 + 65;
 			else if (j % 3 == 1) 
 				c = rand() % 25 + 97;
-			else c = rand() % 9 + 48;
+			else 
+				c = rand() % 9 + 48;
 			fprintf(After, "%c", c);
 		}
 		fprintf(After, "\n");
@@ -1588,7 +1590,7 @@ int main()
 	{
 		fopen_s(&First, "Draft.c", "r");
 		fopen_s(&Second, "Final.c", "w");
-		int j = rand() % 10 + 20; //кол-во мусора
+		int j = rand() % 10 + 20; //количество мусора
 		struct CyclesVariables* Generate;
 		Generate = (struct CyclesVariables*)malloc(sizeof(struct CyclesVariables) * j);
 		GenerateCycles(j, Generate);
