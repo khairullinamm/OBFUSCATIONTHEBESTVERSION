@@ -1335,25 +1335,34 @@ void CreateVariables(FILE* Read)
 	while (!feof(Read))
 	{
 		char GetWord[6];
-		for (int i = 0; i < 6; i++) GetWord[i] = 0;
+		for (int i = 0; i < 6; i++) 
+			GetWord[i] = 0;
 	MarkOutside:
-		for (int i = 0; i < 5 && !feof(Read); i++) GetWord[i] = fgetc(Read);
+		for (int i = 0; i < 5 && !feof(Read); i++) //записываем название переменной
+			GetWord[i] = fgetc(Read);
+		//если это название функций
 		if (strstr(GetWord, "void") || strstr(GetWord, "int") || strstr(GetWord, "char") || strstr(GetWord, "float") || strstr(GetWord, "FILE"))
 		{
 			char s1;
-		MarkInside:
+	MarkInside:
 			s1 = '0';
 			int i = 0;
-			while (isspace(s1 = fgetc(Read)) || s1 == '*') i++;
+			//isspace - провер€ет наличие пробела 
+			while (isspace(s1 = fgetc(Read)) || s1 == '*') 
+				i++;
+			//isalpha - провер€ет €вл€етс€ ли буква
 			if ((isalpha(s1) || s1 == '_') && (i != 0))
 			{
+				//isdigit - дес€тичн цифра
 				while (isalpha(s1) || isdigit(s1) || s1 == '_')
 				{
 					fprintf(Before, "%c", s1);
 					s1 = fgetc(Read);
 				}
 				fprintf(Before, "\n");
-				while (strchr("(),;{}", s1) == NULL) s1 = fgetc(Read);
+				//strchr - первое вхождение символа в строку
+				while (strchr("(),;{}", s1) == NULL) 
+					s1 = fgetc(Read);
 
 				if (s1 == '(') FlagFunction = 1; //находимс€ в объ€влении переменных, передаваемых в функции
 				else if (s1 == ')') FlagFunction = 0; // не находимс€ в объ€влении переменных, передаваемых в функции
@@ -1363,8 +1372,11 @@ void CreateVariables(FILE* Read)
 					while ((s1 = fgetc(Read)) != '}');
 			}
 		}
-		else if (!feof(Read)) fseek(Read, -4, SEEK_CUR);
-		for (int i = 0; i < 6; i++) GetWord[i] = 0;
+		else if (!feof(Read)) 
+			//fseek - мен€ем позицию в файле назад
+			fseek(Read, -4, SEEK_CUR);
+		for (int i = 0; i < 6; i++) 
+			GetWord[i] = 0;
 	}
 	fclose(Before);
 	fopen_s(&Lines, "Before.txt", "r");
@@ -1388,6 +1400,7 @@ void CreateVariables(FILE* Read)
 
 void Rewrite(FILE* First, FILE* Second)
 {
+	//переписывает исходник в финальный
 	int c = fgetc(First);
 	int prev = c;
 	while (c != EOF || !feof(First))
@@ -1404,21 +1417,28 @@ void DeleteCom(FILE* input, FILE* output)
 {
 	int symbol, future, t = 0, k = 0;
 	symbol = fgetc(input);
-	if (symbol != EOF) {
-		while ((future = fgetc(input)) != EOF) {
-
-			if ((symbol == '/') && (future == '/')) {
+	if (symbol != EOF) 
+	{
+		while ((future = fgetc(input)) != EOF) 
+		{
+			//комментарии типа - //
+			if ((symbol == '/') && (future == '/')) //если символы //
+			{
 				t = 1;
-				while (future != '\n') {
+				while (future != '\n') //проходит до конца комментари€
+				{
 					symbol = future;
 					future = fgetc(input);
-					if (future == EOF) break;
-					if (future == '\n' && symbol == '\\') {
+					if (future == EOF) 
+						break;
+					if (future == '\n' && symbol == '\\') //если перенос комментари€
+					{
 						symbol = future;
 						future = fgetc(input);
 					}
 				}
-				if (future == EOF) break;
+				if (future == EOF) 
+					break;
 				fputc(future, output);
 				future = fgetc(input);
 				if (future == EOF) break;
@@ -1426,38 +1446,48 @@ void DeleteCom(FILE* input, FILE* output)
 				t = 0;
 			}
 
-			else if (((symbol == '=') && (future == '"')) || ((symbol == '(') && (future == '"')) || ((symbol == ' ') && (future == '"')) || (symbol == '"' && future == '"')) {
+			//хуита
+			else if (((symbol == '=') && (future == '"')) || ((symbol == '(') && (future == '"')) || ((symbol == ' ') && (future == '"')) || (symbol == '"' && future == '"'))
+			{
 				fputc(symbol, output);
 				symbol = future;
 				future = fgetc(input);
-				if (future == '\\') {
-					while (future == '\\') {
+				if (future == '\\') 
+				{ 
+					while (future == '\\') 
+					{
 						k++;
 						fputc(symbol, output);
 						symbol = future;
 						future = fgetc(input);
 					}
-					if (k % 2 == 1) {
+					if (k % 2 == 1) 
+					{
 						fputc(symbol, output);
 						symbol = future;
 						future = fgetc(input);
 						k = 0;
 					}
 				}
-				while (future != '"') {
-					if (future != '\\') {
+				while (future != '"') 
+				{
+					if (future != '\\')
+					{	
 						fputc(symbol, output);
 						symbol = future;
 						future = fgetc(input);
 					}
-					else {
-						while (future == '\\') {
+					else 
+					{
+						while (future == '\\')
+						{
 							k++;
 							fputc(symbol, output);
 							symbol = future;
 							future = fgetc(input);
 						}
-						if (k % 2 == 1) {
+						if (k % 2 == 1) 
+						{
 							fputc(symbol, output);
 							symbol = future;
 							future = fgetc(input);
@@ -1469,38 +1499,45 @@ void DeleteCom(FILE* input, FILE* output)
 				symbol = future;
 			}
 
-
-			else if ((symbol == '/') && (future == '*')) {
+			//комментарии типа - /**/
+			else if ((symbol == '/') && (future == '*')) 
+			{
 				t = 1;
 				symbol = future;
 				future = fgetc(input);
 				symbol = future;
 				future = fgetc(input);
-				while (symbol != '*' || future != '/') {
+				while (symbol != '*' || future != '/') 
+				{
 					symbol = future;
 					future = fgetc(input);
-					if (future == EOF) break;
+					if (future == EOF) 
+						break;
 				}
 				symbol = future;
 				future = fgetc(input);
-				if (future == EOF) break;
+				if (future == EOF) 
+					break;
 				symbol = future;
 				t = 0;
 			}
 
-			else {
+			else 
+			{
 				fputc(symbol, output);
 				symbol = future;
 			}
 
 		}
-		if (t == 0)fputc(symbol, output);
+		if (t == 0)
+			fputc(symbol, output);
 	}
 	fclose(input);
 	fclose(output);
 }
 
-int main() {
+int main() 
+{
 	FILE* First;
 	FILE* Second;
 	FILE* ConfigFile;
@@ -1509,7 +1546,8 @@ int main() {
 	srand(time(NULL)); //обновление rand() при каждом запуске программы
 
 	fopen_s(&ConfigFile, "Config.txt", "r");
-	for (int i = 0; i < 5; i++) fscanf(ConfigFile, "%d", &ConfigData[i]);//читаем параметры
+	for (int i = 0; i < 5; i++) 
+		fscanf(ConfigFile, "%d", &ConfigData[i]);//читаем параметры
 	fclose(ConfigFile);
 
 	if (ConfigData[0] == 1) // ”даление комментариев
