@@ -1176,12 +1176,12 @@ void RenameVariables()
 	int min;
 
 	Alphabet = (FILE**)malloc(sizeof(FILE*) * 2);
-	fopen_s(&Alphabet[0], "Before.txt", "r");
-	fopen_s(&Alphabet[1], "After.txt", "r");
+	fopen_s(&Alphabet[0], "Before.txt", "r"); //обычные названия функций
+	fopen_s(&Alphabet[1], "After.txt", "r"); //новые названия функций
 
 
 	int* CheckLines;
-	CheckLines = (int*)malloc(sizeof(int) * 2);
+	CheckLines = (int*)malloc(sizeof(int) * 2); //умножаем на два тк два файла
 	CheckLines[0] = CountLines(Alphabet[0]);
 	CheckLines[1] = CountLines(Alphabet[1]);
 
@@ -1191,16 +1191,17 @@ void RenameVariables()
 		return;
 	}
 
-	lines = CheckLines[0];
+	lines = CheckLines[0]; //количество строк
 	free(CheckLines);
 	CheckLines = NULL;
 
 	A = (int*)calloc(lines, sizeof(int));
 	B = (int*)calloc(lines, sizeof(int));
-	CountLetters(Alphabet[0], A);
+	CountLetters(Alphabet[0], A); //количество
 	CountLetters(Alphabet[1], B);
 
-	while (A[lines - 1] == 0 && B[lines - 1] == 0) lines--;
+	while (A[lines - 1] == 0 && B[lines - 1] == 0)
+		lines--;
 	if (A[lines - 1] == 0 || B[lines - 1] == 0)
 	{
 		printf("Lines don't match.\n");
@@ -1234,8 +1235,8 @@ void RenameVariables()
 	fclose(Alphabet[1]);
 	free(Alphabet);
 	Alphabet = NULL;
-	remove("Before.txt");
-	remove("After.txt");
+//	remove("Before.txt");
+	//remove("After.txt");
 
 	max = FunctionGetMax(A, lines);
 	min = FunctionGetMin(A, lines);
@@ -1364,7 +1365,7 @@ void CreateVariables(FILE* Read)
 					fprintf(Before, "%c", s1);
 					s1 = fgetc(Read);
 				}
-				fprintf(Before, "\n");
+				fprintf(Before, "\n"); 
 				//strchr - первое вхождение символа в строку
 				while (strchr("(),;{}", s1) == NULL) 
 					s1 = fgetc(Read);
@@ -1378,9 +1379,9 @@ void CreateVariables(FILE* Read)
 			}
 		}
 	
-		else if (!feof(Read)) 
+		//else if (!feof(Read)) 
 			//fseek - меняем позицию в файле назад
-			fseek(Read, -4, SEEK_CUR);
+			//fseek(Read, -4, SEEK_CUR);
 		for (int i = 0; i < 6; i++) 
 			GetWord[i] = 0;
 	}
