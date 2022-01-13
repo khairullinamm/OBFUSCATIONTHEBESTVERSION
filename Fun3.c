@@ -1,1 +1,0 @@
-void _Vd7W2om(){for(;_Nsk3lj<=1822;)_Nsk3lj*=10;;}

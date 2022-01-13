@@ -1,1 +1,0 @@
-void _TxLFl(){while(nlUHPN2sw4f<=6358)nlUHPN2sw4f*=10;;}
