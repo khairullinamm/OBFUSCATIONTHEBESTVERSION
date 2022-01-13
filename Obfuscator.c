@@ -1609,16 +1609,31 @@ int main()
 			fclose(Second);
 		}
 
-		for (int i = 0; i < Count; i++)//порядок следования функций 
+	/*	for (int i = 0; i < Count; i++)//порядок следования функций 
 		{
 			Random[i] = rand() % Count;
-			for (int j = 0; j < Count; j++)
+			for (int j = 0; j < Count; j++) //сравнивает не появились ли одинаковые числа
 				if (Random[i] == Random[j] && j != i)
 				{
 					j = -1;
 					Random[i] = rand() % Count;
 				}
 		}
+		*/
+
+		srand(time(NULL));
+
+		for (int i = 0; i < Count; i++)
+			Random[i] = i;
+
+		for (int i = Count - 1; i > 0; i--)
+		{
+			int index = rand() % (i + 1); //случайный индекс от 0 до i
+			int temp = Random[i];
+			Random[i] = Random[index];
+			Random[index] = temp;
+		}
+
 
 		for (int i = 0; i < Count; i++)//переписываем сами функции
 		{
