@@ -15,8 +15,9 @@ c
 prev
 j
 i
+GenerateFunctionFiles
 First
-FILE
+Second
 c
 i
 fun
@@ -131,6 +132,7 @@ j
 VariableSet
 k
 GenerateCycles
+j
 Length
 l
 i
@@ -147,10 +149,12 @@ j
 Temp
 j
 FunctionGetMax
+ar
 lines
 max
 i
 FunctionGetMin
+ar
 lines
 min
 i

@@ -189,7 +189,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 
 				else if (g == '(')
 				{
-					FILE* Buffer;
+					FILE* massiv_fail;
 					char FunNum[8] = "Fun";
 					char Number[3];
 					for (int j = 0; j < 3; j++) 
@@ -198,29 +198,29 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 					fun++;
 					strncat(FunNum, Number, strlen(Number));
 					strncat(FunNum, ".c", strlen(".c"));
-					fopen_s(&Buffer, FunNum, "w");
-					fprintf(Buffer, "%s%s%c", Check, TakeCare, g);
+					fopen_s(&massiv_fail, FunNum, "w");
+					fprintf(massiv_fail, "%s%s%c", Check, TakeCare, g);
 					while ((g = fgetc(First)) != '{') 
-						fputc(g, Buffer);
-					fputc(g, Buffer);
+						fputc(g, massiv_fail);
+					fputc(g, massiv_fail);
 					i++;
 					while (i > 0 && !feof(First))//пока внутри функции
 					{
 						g = fgetc(First);
 						if (g != EOF) 
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						if (g == '\'')
 						{
 							while ((g = fgetc(First)) != '\'')
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 						else if (g == '\"')
 						{
@@ -228,18 +228,18 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 
 						else if (g == '{') i++;
 						else if (g == '}') i--;
 					}
-					fclose(Buffer);
+					fclose(massiv_fail);
 				}
 				free(TakeCare);
 				TakeCare = NULL;
@@ -312,7 +312,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 
 				else if (g == '(')
 				{
-					FILE* Buffer;
+					FILE* massiv_fail;
 					char FunNum[8] = "Fun";
 					char Number[3];
 					for (int j = 0; j < 3; j++) Number[j] = '\0';
@@ -320,27 +320,27 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 					fun++;
 					strncat(FunNum, Number, strlen(Number));
 					strncat(FunNum, ".c", strlen(".c"));
-					fopen_s(&Buffer, FunNum, "w");
-					fprintf(Buffer, "%s%s%c", Check, TakeCare, g);
-					while ((g = fgetc(First)) != '{') fputc(g, Buffer);
-					fputc(g, Buffer);
+					fopen_s(&massiv_fail, FunNum, "w");
+					fprintf(massiv_fail, "%s%s%c", Check, TakeCare, g);
+					while ((g = fgetc(First)) != '{') fputc(g, massiv_fail);
+					fputc(g, massiv_fail);
 					i++;
 					while (i > 0 && !feof(First))//пока внутри функции
 					{
 						g = fgetc(First);
-						if (g != EOF) fputc(g, Buffer);
+						if (g != EOF) fputc(g, massiv_fail);
 						if (g == '\'')
 						{
 							while ((g = fgetc(First)) != '\'')
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 						else if (g == '\"')
 						{
@@ -348,18 +348,18 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 
 						else if (g == '{') i++;
 						else if (g == '}') i--;
 					}
-					fclose(Buffer);
+					fclose(massiv_fail);
 				}
 				free(TakeCare);
 				TakeCare = NULL;
@@ -401,7 +401,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 
 				else if (g == '(')
 				{
-					FILE* Buffer;
+					FILE* massiv_fail;
 					char FunNum[8] = "Fun";
 					char Number[3];
 					for (int j = 0; j < 3; j++) Number[j] = '\0';
@@ -409,27 +409,27 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 					fun++;
 					strncat(FunNum, Number, strlen(Number));
 					strncat(FunNum, ".c", strlen(".c"));
-					fopen_s(&Buffer, FunNum, "w");
-					fprintf(Buffer, "%s%s%c", Check, TakeCare, g);
-					while ((g = fgetc(First)) != '{') fputc(g, Buffer);
-					fputc(g, Buffer);
+					fopen_s(&massiv_fail, FunNum, "w");
+					fprintf(massiv_fail, "%s%s%c", Check, TakeCare, g);
+					while ((g = fgetc(First)) != '{') fputc(g, massiv_fail);
+					fputc(g, massiv_fail);
 					i++;
 					while (i > 0 && !feof(First))//пока внутри функции
 					{
 						g = fgetc(First);
-						if (g != EOF) fputc(g, Buffer);
+						if (g != EOF) fputc(g, massiv_fail);
 						if (g == '\'')
 						{
 							while ((g = fgetc(First)) != '\'')
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 						else if (g == '\"')
 						{
@@ -437,18 +437,18 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 
 						else if (g == '{') i++;
 						else if (g == '}') i--;
 					}
-					fclose(Buffer);
+					fclose(massiv_fail);
 				}
 				free(TakeCare);
 				TakeCare = NULL;
@@ -489,7 +489,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 
 				else if (g == '(')
 				{
-					FILE* Buffer;
+					FILE* massiv_fail;
 					char FunNum[8] = "Fun";
 					char Number[3];
 					for (int j = 0; j < 3; j++) Number[j] = '\0';
@@ -497,27 +497,27 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 					fun++;
 					strncat(FunNum, Number, strlen(Number));
 					strncat(FunNum, ".c", strlen(".c"));
-					fopen_s(&Buffer, FunNum, "w");
-					fprintf(Buffer, "%s%s%c", Check, TakeCare, g);
-					while ((g = fgetc(First)) != '{') fputc(g, Buffer);
-					fputc(g, Buffer);
+					fopen_s(&massiv_fail, FunNum, "w");
+					fprintf(massiv_fail, "%s%s%c", Check, TakeCare, g);
+					while ((g = fgetc(First)) != '{') fputc(g, massiv_fail);
+					fputc(g, massiv_fail);
 					i++;
 					while (i > 0 && !feof(First))//пока внутри функции
 					{
 						g = fgetc(First);
-						if (g != EOF) fputc(g, Buffer);
+						if (g != EOF) fputc(g, massiv_fail);
 						if (g == '\'')
 						{
 							while ((g = fgetc(First)) != '\'')
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 						else if (g == '\"')
 						{
@@ -525,18 +525,18 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 
 						else if (g == '{') i++;
 						else if (g == '}') i--;
 					}
-					fclose(Buffer);
+					fclose(massiv_fail);
 				}
 				free(TakeCare);
 				TakeCare = NULL;
@@ -578,7 +578,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 
 				else if (g == '(')
 				{
-					FILE* Buffer;
+					FILE* massiv_fail;
 					char FunNum[8] = "Fun";
 					char Number[3];
 					for (int j = 0; j < 3; j++) Number[j] = '\0';
@@ -586,27 +586,27 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 					fun++;
 					strncat(FunNum, Number, strlen(Number));
 					strncat(FunNum, ".c", strlen(".c"));
-					fopen_s(&Buffer, FunNum, "w");
-					fprintf(Buffer, "%s%s%c", Check, TakeCare, g);
-					while ((g = fgetc(First)) != '{') fputc(g, Buffer);
-					fputc(g, Buffer);
+					fopen_s(&massiv_fail, FunNum, "w");
+					fprintf(massiv_fail, "%s%s%c", Check, TakeCare, g);
+					while ((g = fgetc(First)) != '{') fputc(g, massiv_fail);
+					fputc(g, massiv_fail);
 					i++;
 					while (i > 0 && !feof(First))//пока внутри функции
 					{
 						g = fgetc(First);
-						if (g != EOF) fputc(g, Buffer);
+						if (g != EOF) fputc(g, massiv_fail);
 						if (g == '\'')
 						{
 							while ((g = fgetc(First)) != '\'')
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 						else if (g == '\"')
 						{
@@ -614,18 +614,18 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 
 						else if (g == '{') i++;
 						else if (g == '}') i--;
 					}
-					fclose(Buffer);
+					fclose(massiv_fail);
 				}
 				free(TakeCare);
 				TakeCare = NULL;
@@ -667,7 +667,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 
 				else if (g == '(')
 				{
-					FILE* Buffer;
+					FILE* massiv_fail;
 					char FunNum[8] = "Fun";
 					char Number[3];
 					for (int j = 0; j < 3; j++) Number[j] = '\0';
@@ -675,27 +675,27 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 					fun++;
 					strncat(FunNum, Number, strlen(Number));
 					strncat(FunNum, ".c", strlen(".c"));
-					fopen_s(&Buffer, FunNum, "w");
-					fprintf(Buffer, "%s%s%c", Check, TakeCare, g);
-					while ((g = fgetc(First)) != '{') fputc(g, Buffer);
-					fputc(g, Buffer);
+					fopen_s(&massiv_fail, FunNum, "w");
+					fprintf(massiv_fail, "%s%s%c", Check, TakeCare, g);
+					while ((g = fgetc(First)) != '{') fputc(g, massiv_fail);
+					fputc(g, massiv_fail);
 					i++;
 					while (i > 0 && !feof(First))//пока внутри функции
 					{
 						g = fgetc(First);
-						if (g != EOF) fputc(g, Buffer);
+						if (g != EOF) fputc(g, massiv_fail);
 						if (g == '\'')
 						{
 							while ((g = fgetc(First)) != '\'')
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 						else if (g == '\"')
 						{
@@ -703,18 +703,18 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 							{
 								if (g == '\\')
 								{
-									fputc(g, Buffer);
+									fputc(g, massiv_fail);
 									g = fgetc(First);
 								}
-								fputc(g, Buffer);
+								fputc(g, massiv_fail);
 							}
-							fputc(g, Buffer);
+							fputc(g, massiv_fail);
 						}
 
 						else if (g == '{') i++;
 						else if (g == '}') i--;
 					}
-					fclose(Buffer);
+					fclose(massiv_fail);
 				}
 				free(TakeCare);
 				TakeCare = NULL;
@@ -756,15 +756,15 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 	{
 		char c;
 		int j = 0;
-		int flag = 0;
-		while (j != 0 || flag == 0)//пока внутри {}
+		int bool = 0;
+		while (j != 0 || bool == 0)//пока внутри {}
 		{
 			c = fgetc(First);
 			fputc(c, Second);
 			if (c == '{')
 			{
 				j++;
-				flag = 1;
+				bool = 1;
 			}
 			else if (c == '}') 
 				j--;
@@ -772,7 +772,7 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 	}
 
 	int i = 0;//проверка на вхождение в {}
-	int flag = 0;
+	int bool = 0;
 	int reason = 1;//заход в main
 	int CallFunctions = 0;
 	char c;
@@ -797,15 +797,15 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 			if (strcmp("struct", Check) == 0)
 			{
 				int j = 0;
-				int flag = 0;
-				while (j != 0 || flag == 0)
+				int bool = 0;
+				while (j != 0 || bool == 0)
 				{
 					c = fgetc(First);
 					fputc(c, Second);
 					if (c == '{')
 					{
 						j++;
-						flag = 1;
+						bool = 1;
 					}
 					else if (c == '}') 
 						j--;
@@ -945,7 +945,7 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 			{
 				i--;
 				if (i == 0 && count < Limit) 
-					flag = 1;
+					bool = 1;
 			}
 			if (strchr(Check, '/') != NULL)
 				for (int k = 0; k < 5; k++)
@@ -957,9 +957,9 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 						goto Breakout;
 					}
 			fprintf(Second, "%s", Check);
-			if (flag && reason)
+			if (bool && reason)
 			{
-				flag = 0;
+				bool = 0;
 				fprintf(Second, "void %s(){%s%s%s%s;}", Generate[count].FunName, Generate[count].ConStart, Generate[count].ConMid, Generate[count].ConEnd, Generate[count].VarAction);
 				count++;
 			}
@@ -1297,86 +1297,110 @@ void CreateVariables(FILE* Read)
 	FILE* Before;
 	FILE* After;
 	FILE* Lines;
-	int LinesCount;
+	int Strings = 0;
 	fopen_s(&Before, "Before.txt", "w");
 	fopen_s(&After, "After.txt", "w");
-	int FlagFunction = 0;
-	while (!feof(Read))
-	{
-		char GetWord[6];
-		for (int i = 0; i < 6; i++) 
-			GetWord[i] = 0;
-		MarkOutside:
-		//внутри объ€влени€ переменных
-		for (int i = 0; i < 5 && !feof(Read); i++) //записываем название переменной
-		{
-			GetWord[i] = fgetc(Read);
-		}
-		//printf("%s\n", GetWord);
-		//если это тип функций
-		if (strstr(GetWord, "void") || strstr(GetWord, "int") || strstr(GetWord, "char") || strstr(GetWord, "float") || strstr(GetWord, "FILE"))
-		{
-			char s1;
-		MarkInside:
-		//сюда заходим только в том случае, если GetWord - включает в себ€ тип функции
-			s1 = '0';
-			int i = 0;
-			//isspace - провер€ет наличие пробела 
-			while (isspace(s1 = fgetc(Read)) || s1 == '*') //доходим до начала названи€ функции
-				i++;
-			//isalpha - провер€ет €вл€етс€ ли буква
-			if ((isalpha(s1) || s1 == '_') && (i != 0))
-			{
-				//isdigit - дес€тичн цифра
-				while (isalpha(s1) || isdigit(s1) || s1 == '_') //записываем название функции в файл before
-				{
-					fprintf(Before, "%c", s1);
-					s1 = fgetc(Read);
-				}
-				fprintf(Before, "\n"); 
-				//strchr - первое совпадение символа s1 со строкой\
-				находим открытую или закрытую скобку или зап€тую или точку с зап€той
-				while (strchr("(),;{}", s1) == NULL)
-				{
-					s1 = fgetc(Read);
-				}
-
-				if (s1 == '(') FlagFunction = 1; //находимс€ в объ€влении переменных, передаваемых в функции
-				else if (s1 == ')') FlagFunction = 0; // не находимс€ в объ€влении переменных, передаваемых в функции
-				else if (s1 == ',' && FlagFunction == 1) goto MarkOutside; 
-				else if (s1 == ',' && FlagFunction == 0) goto MarkInside; 
-				else if (s1 == '{')
-					while ((s1 = fgetc(Read)) != '}');
-			}
-		}
+	int FlagFunction = 0; //внутри или вне объ€влени€ переменных
+	int length = 0; 
+	int c ,i; //с - читает файл, i - провер€ет есть пробел или * после типа функции
+	char* massiv_fail = (char*)malloc(1*sizeof(char));
 	
-		else if (!feof(Read)) 
-			//fseek - мен€ем позицию в файле назад
-			fseek(Read, -4, SEEK_CUR);
-		for (int i = 0; i < 6; i++) 
-			GetWord[i] = 0;
-	}
-	fclose(Before);
-	fopen_s(&Lines, "Before.txt", "r");
-	LinesCount = CountLines(Lines); //количество строк = количество функций и переменных
-	fclose(Lines);
-	for (int i = 0; i < LinesCount - 1; i++)
+	for (length; (c = fgetc(Read)) != EOF; length++) //записываем файл в массив и считаем длину 
 	{
-		int Length = rand() % 20 + 5; //длина строк
-		for (int j = 0; j < Length; j++) //переименовываем названи€ функций и переменных
+		massiv_fail = (char*)realloc(massiv_fail, length + 1);
+		massiv_fail[length] = c;
+	}
+	fclose(Read);
+
+	int bool = 0; //проверка на нахождение слова
+	for (unsigned long long index = 0; index < length; index++)
+	
+	{
+	DeadOutside:
+		if (massiv_fail[index] == 'i' && massiv_fail[index + 1] == 'n' && massiv_fail[index + 2] == 't')
+		{
+			bool++;
+			index += 3;
+		}
+		else if ((massiv_fail[index] == 'c' && massiv_fail[index + 1] == 'h' && massiv_fail[index + 2] == 'a' && massiv_fail[index + 3] == 'r') || (massiv_fail[index] == 'v' && massiv_fail[index + 1] == 'o' && massiv_fail[index + 2] == 'i' && massiv_fail[index + 3] == 'd') || (massiv_fail[index] == 'F' && massiv_fail[index + 1] == 'I' && massiv_fail[index + 2] == 'L' && massiv_fail[index + 3] == 'E'))
+		{
+			bool++;
+			index += 4;
+		}
+		else if (massiv_fail[index] == 'f' && massiv_fail[index + 1] == 'l' && massiv_fail[index + 2] == 'o' && massiv_fail[index + 3] == 'a' && massiv_fail[index + 4] == 't')
+		{
+			bool++;
+			index += 5;
+		}
+
+		if (bool) //если был найден какой-то тип
+		{
+		DeadInside:
+			bool = 0;
+			i = 0;
+			while (isspace(massiv_fail[index]) || massiv_fail[index] == '*') //пропускаем пробел и звездочку, чтобы дойти до названи файла
+			{
+				index++;
+				i++;
+			}
+			if ((isalpha(massiv_fail[index]) || massiv_fail[index] == '_') && (i != 0))
+			{
+				while (isalpha(massiv_fail[index]) || isdigit(massiv_fail[index]) || massiv_fail[index] == '_')
+				{
+					fputc(massiv_fail[index], Before); //кладем название функции в файл
+					index++;
+				}
+				fputc('\n', Before);
+				Strings++;
+				while (strchr("(),;{}", massiv_fail[index]) == NULL) 
+					index++;
+
+				if (massiv_fail[index] == '(') FlagFunction = 1; //внутри объ€влени€ переменных
+				else if (massiv_fail[index] == ')') FlagFunction = 0; //вне объ€влени€ переменных
+				else if (massiv_fail[index] == ',' && FlagFunction == 1)
+				{
+					index++;
+					goto DeadOutside;
+				}
+				else if (massiv_fail[index] == ',' && FlagFunction == 0)
+				{
+					index++;
+					goto DeadInside;
+				}
+				else if (massiv_fail[index] == '{')
+				{
+					while (massiv_fail[index] != '}')
+						index++;
+					index++;
+				}
+			}
+
+		}
+	}
+
+	free(massiv_fail);
+	massiv_fail = NULL;
+	fclose(Before);
+	//strings - количество строк
+	for (int i = 0; i < Strings; i++) //генерируем названи€ переменных и функций
+	{
+		int Length = rand() % 20 + 5; //длина строки
+		for (int j = 0; j < Length; j++)
 		{
 			unsigned char c;
-			if (j % 3 == 0) 
+			if (j % 3 == 0) //заглавные буквы 
 				c = rand() % 25 + 65;
-			else if (j % 3 == 1) 
-				c = rand() % 25 + 97;
-			else 
+			else if (j % 3 == 1) //строчные буквы
+				c = rand() % 25 + 97; 
+			else //цифры 
 				c = rand() % 9 + 48;
-			fprintf(After, "%c", c); //записываем новые названи€ функций
+			fputc(c, After);
 		}
-		fprintf(After, "\n");
+		fputc('\n', After);
 	}
 	fclose(After);
+	return Strings; //количество строк
+
 }
 
 void Rewrite(FILE* First, FILE* Second)
