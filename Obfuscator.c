@@ -31,12 +31,15 @@ void DeleteSpaces(FILE* First, FILE* Second)
 	int c, prev = '\0';
 	while ((c = fgetc(First)) != EOF && !feof(First))
 	{
-		if (c != '\n' && c != '\t' && c != ' ') fputc(c, Second);
-		else prev = c;
+		if (c != '\n' && c != '\t' && c != ' ') 
+			fputc(c, Second);
+		else 
+			prev = c;
 
 		if (c == '#')
 		{
-			while ((c = fgetc(First)) != '\n') fputc(c, Second);
+			while ((c = fgetc(First)) != '\n') 
+				fputc(c, Second);
 			fputc(c, Second);
 		}
 
@@ -109,13 +112,16 @@ void DeleteSpaces(FILE* First, FILE* Second)
 		else if (c == '\t' || c == ' ' || c == '\n')
 		{
 			int i = 0;
+			//isgraph проверяет, имеет ли графическое представление символ
 			while (!isgraph(c) && !feof(First)) //не пишем ненужные символы
 			{
 				c = fgetc(First);
 				i++;
 			}
-			if (i == 1 || (prev == '\n' && i >= 2)) fputc(prev, Second);//переход на новую строку
-			if (!feof(First)) fseek(First, -1, SEEK_CUR);
+			if (i == 1 || (prev == '\n' && i >= 2)) 
+				fputc(prev, Second);//переход на новую строку
+			if (!feof(First)) 
+				fseek(First, -1, SEEK_CUR);
 		}
 	}
 	fclose(First);
@@ -130,7 +136,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 
 	while ((c = fgetc(First)) != EOF && !feof(First))
 	{
-		if (c == '#')
+		if (c == '#') //библиотеки
 		{
 			do
 			{
@@ -139,15 +145,19 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 			fputc(c, Second);
 		}
 
-		else if (c == '{') i++;
-		else if (c == '}') i--;
+		else if (c == '{') 
+			i++;
+		else if (c == '}') 
+			i--;
 
 		else if (i == 0 && c == 'i')//потенциально int
 		{
 			char Check[5];
-			for (int i = 0; i < 5; i++) Check[i] = '\0';
+			for (int i = 0; i < 5; i++) 
+				Check[i] = '\0';
 			Check[0] = c;
-			for (int j = 1; strstr("int ", Check) && j < 4; j++) Check[j] = fgetc(First);
+			for (int j = 1; strstr("int ", Check) && j < 4; j++) 
+				Check[j] = fgetc(First);
 			if (strcmp("int ", Check) == 0 || strcmp("int*", Check) == 0)//если int
 			{
 				int k = -1;
@@ -155,14 +165,16 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 				int l = 0;
 				char* TakeCare;
 				TakeCare = (char*)malloc(sizeof(char) * 2);
-				for (int j = 0; j < 2; j++) TakeCare[j] = '\0';
-				while ((g = fgetc(First)) != '=' && g != '(' && g != ')' && g != ';')
+				for (int j = 0; j < 2; j++) 
+					TakeCare[j] = '\0';
+				while ((g = fgetc(First)) != '=' && g != '(' && g != ')' && g != ';') //функция
 				{
 					TakeCare[l] = g;
 					l++;
 					TakeCare = (char*)realloc(TakeCare, sizeof(char) * (l + 2));
 					TakeCare[l] = '\0';
-					if (g == '\n') k--;
+					if (g == '\n') 
+						k--;
 					k--;
 				}
 
@@ -170,7 +182,8 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 				{
 					fseek(First, k, SEEK_CUR);
 					fprintf(Second, "%s", Check);
-					while ((g = fgetc(First)) != ';') fputc(g, Second);
+					while ((g = fgetc(First)) != ';') 
+						fputc(g, Second);
 					fputc(g, Second);
 				}
 
@@ -179,20 +192,23 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 					FILE* Buffer;
 					char FunNum[8] = "Fun";
 					char Number[3];
-					for (int j = 0; j < 3; j++) Number[j] = '\0';
+					for (int j = 0; j < 3; j++) 
+						Number[j] = '\0';
 					_itoa(fun, Number, 10);
 					fun++;
 					strncat(FunNum, Number, strlen(Number));
 					strncat(FunNum, ".c", strlen(".c"));
 					fopen_s(&Buffer, FunNum, "w");
 					fprintf(Buffer, "%s%s%c", Check, TakeCare, g);
-					while ((g = fgetc(First)) != '{') fputc(g, Buffer);
+					while ((g = fgetc(First)) != '{') 
+						fputc(g, Buffer);
 					fputc(g, Buffer);
 					i++;
 					while (i > 0 && !feof(First))//пока внутри функции
 					{
 						g = fgetc(First);
-						if (g != EOF) fputc(g, Buffer);
+						if (g != EOF) 
+							fputc(g, Buffer);
 						if (g == '\'')
 						{
 							while ((g = fgetc(First)) != '\'')
@@ -235,7 +251,8 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 			char Check[8];
 			for (int i = 0; i < 8; i++) Check[i] = '\0';
 			Check[0] = c;
-			for (int j = 1; strstr("struct ", Check) && j < 7; j++) Check[j] = fgetc(First);
+			for (int j = 1; strstr("struct ", Check) && j < 7; j++) 
+				Check[j] = fgetc(First);
 			if (strcmp("struct ", Check) == 0)
 			{
 				int k = -1;
@@ -265,7 +282,8 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 			char Check[7];
 			for (int i = 0; i < 7; i++) Check[i] = '\0';
 			Check[0] = c;
-			for (int j = 1; strstr("float ", Check) && j < 6; j++) Check[j] = fgetc(First);
+			for (int j = 1; strstr("float ", Check) && j < 6; j++) 
+				Check[j] = fgetc(First);
 			if (strcmp("float ", Check) == 0 || strcmp("float*", Check) == 0)
 			{
 				int k = -1;
@@ -351,7 +369,8 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 		else if (i == 0 && c == 'd')//потенциально double
 		{
 			char Check[7];
-			for (int i = 0; i < 7; i++) Check[i] = '\0';
+			for (int i = 0; i < 7; i++) 
+				Check[i] = '\0';
 			Check[0] = c;
 			for (int j = 1; strstr("double ", Check) && j < 6; j++) Check[j] = fgetc(First);
 			if (strcmp("double ", Check) == 0 || strcmp("double*", Check) == 0)
@@ -436,7 +455,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 			}
 		}
 		
-		else if (i == 0 && c == 'l')
+		else if (i == 0 && c == 'l') //потенциально long
 		{
 			char Check[6];
 			for (int i = 0; i < 6; i++) Check[i] = '\0';
@@ -527,7 +546,8 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 		else if (i == 0 && c == 'c')//потенциально char
 		{
 			char Check[6];
-			for (int i = 0; i < 6; i++) Check[i] = '\0';
+			for (int i = 0; i < 6; i++) 
+				Check[i] = '\0';
 			Check[0] = c;
 			for (int j = 1; strstr("char ", Check) && j < 5; j++) Check[j] = fgetc(First);
 			if (strcmp("char ", Check) == 0 || strcmp("char*", Check) == 0)
@@ -615,7 +635,8 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 		else if (i == 0 && c == 'v')//потенциально void
 		{
 			char Check[6];
-			for (int i = 0; i < 6; i++) Check[i] = '\0';
+			for (int i = 0; i < 6; i++) 
+				Check[i] = '\0';
 			Check[0] = c;
 			for (int j = 1; strstr("void ", Check) && j < 5; j++) Check[j] = fgetc(First);
 			if (strcmp("void ", Check) == 0)
@@ -1291,7 +1312,7 @@ void CreateVariables(FILE* Read)
 		{
 			GetWord[i] = fgetc(Read);
 		}
-		printf("%s\n", GetWord);
+		//printf("%s\n", GetWord);
 		//если это тип функций
 		if (strstr(GetWord, "void") || strstr(GetWord, "int") || strstr(GetWord, "char") || strstr(GetWord, "float") || strstr(GetWord, "FILE"))
 		{
@@ -1565,20 +1586,24 @@ int main()
 		fopen_s(&Second, "Draft.c", "w");
 		Count = GenerateFunctionFiles(First, Second);
 		Random = (int*)malloc(sizeof(int) * Count);
-		memset(Random, -1, sizeof(int) * Count);
+		memset(Random, -1, sizeof(int) * Count); //заполняет random минус единицами 
 
-		for (int i = 0; i < Count; i++)//Записываем название всех функций
+		for (int i = 0; i < Count; i++)//Записываем название всех функций и объявленные переменные (они уже уродские)
 		{
 			char FunNum[8] = "Fun";
 			char Number[3];
 			char c;
-			for (int j = 0; j < 3; j++) Number[j] = '\0';
+			for (int j = 0; j < 3; j++)
+				Number[j] = '\0';
 			_itoa(i, Number, 10);
 			strncat(FunNum, Number, strlen(Number));
 			strncat(FunNum, ".c", strlen(".c"));
-			fopen_s(&First, "Draft.c", "a");
+			fopen_s(&First, "Draft.c", "a"); //draft - типа, название и переменные функций
 			fopen_s(&Second, FunNum, "r");
-			while ((c = fgetc(Second)) != ')') fputc(c, First);
+			while ((c = fgetc(Second)) != ')')
+			{
+				fputc(c, First);
+			}
 			fprintf(First, "%c;\n", c);
 			fclose(First);
 			fclose(Second);
@@ -1597,9 +1622,11 @@ int main()
 
 		for (int i = 0; i < Count; i++)//переписываем сами функции
 		{
+			//выбирает рандмный файл с функцией и записывает функцию в draft
 			char FunNum[8] = "Fun";
 			char Number[3];
-			for (int j = 0; j < 3; j++) Number[j] = '\0';
+			for (int j = 0; j < 3; j++) 
+				Number[j] = '\0';
 			_itoa(Random[i], Number, 10);
 			strncat(FunNum, Number, strlen(Number));
 			strncat(FunNum, ".c", strlen(".c"));
