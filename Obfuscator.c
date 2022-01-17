@@ -729,14 +729,12 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, int Limit)
 {
 	int count = 0;
-	char Temp[140];
-	for (int i = 0; i < 140; i++) 
-		Temp[i] = '\0';
+	char Temp[140] = {'\0'};
+	
 	do
 	{
 		fprintf(Second, "%s", Temp);
-		for (int i = 0; i < 140; i++) 
-			Temp[i] = '\0';
+		
 		char c;
 		fscanf(First, "%c", &c);
 		fprintf(Second, "%c", c);
@@ -744,11 +742,13 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 	} while (!strstr(Temp, "int") && !strstr(Temp, "void") && !strstr(Temp, "char") && !strstr(Temp, "float") && !strstr(Temp, "struct"));
 
 	fprintf(Second, "int ", Temp);
-	for (int i = 0; i < Limit; i++)//мусорные переменные
+	for (int i = 0; i < Limit; i+=2)//мусорные переменные
 	{
-		fprintf(Second, "%s = %s", Generate[i].VarName, Generate[i].VarValue);
-		if (i != Limit - 1) 
-			fprintf(Second, ",");
+		
+		fprintf(Second, "%s = %s,", Generate[i].VarName, Generate[i].VarValue);
+		if (i + 1 < Limit)fprintf(Second, "%s = %s,", Generate[i + 1].VarName, Generate[i + 1].VarValue);
+		else break;
+
 	}
 	fprintf(Second, ";\n%s", Temp);
 
@@ -782,7 +782,127 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 	Breakout:;
 		char prev;
 		fputc(c, Second);
-		if (c == 's' && i == 0) //потенциально структура
+
+		if (c == ';' && i != 0) // ; внутри функции
+	{
+		while (isspace(c = fgetc(First)) && !feof(First))
+			fputc(c, Second);
+		char Check[5];
+		for (int i = 0; i < 5; i++)
+			Check[i] = '\0';
+		Check[0] = c;
+
+		for (int j = 1; strstr("else", Check) != NULL && j < 4 && !feof(First); j++) //проверка на наличие else
+		{
+			//printf("%s\n", Check);
+			c = fgetc(First);
+			Check[j] = c;
+		}
+
+		if (strcmp("else", Check) != 0)//если после ; не else, то пишем мусор
+		{
+			int VariableSet = rand() % (Limit - 1);
+			fprintf(Second, "%s%s%s%s", Generate[VariableSet].ConStart, Generate[VariableSet].ConMid, Generate[VariableSet].ConEnd, Generate[VariableSet].VarAction);
+			if (CallFunctions && count >= 0)
+			{
+				fprintf(Second, "%s();", Generate[count].FunName);
+				count--;
+			}
+		}
+		if (strchr(Check, '{') != NULL)
+			i++;
+		if (strchr(Check, '}') != NULL)
+		{
+			i--;
+			if (i == 0 && count < Limit)
+				bool = 1;
+		}
+		if (strchr(Check, '/') != NULL)
+			for (int k = 0; k < 5; k++)
+				if (Check[k] != '/')
+					fputc(Check[k], Second);
+				else
+				{
+					c = '/';
+					goto Breakout;
+				}
+		fprintf(Second, "%s", Check);
+		if (bool&& reason)
+		{
+			bool = 0;
+			fprintf(Second, "void %s(){%s%s%s%s;}", Generate[count].FunName, Generate[count].ConStart, Generate[count].ConMid, Generate[count].ConEnd, Generate[count].VarAction);
+			count++;
+		}
+	}
+
+		else if (c == '(')
+		{
+			int j = 1;
+			while (j != 0)//пока не вышли из скобки
+			{
+				c = fgetc(First);
+				fputc(c, Second);
+				if (c == '\'')
+					do
+					{
+						prev = c;
+						c = fgetc(First);
+						fputc(c, Second);
+						if (prev == '\\')
+						{
+							prev = c;
+							c = fgetc(First);
+							fputc(c, Second);
+						}
+					} while (c != '\'');
+				else if (c == '"')
+					do
+					{
+						prev = c;
+						c = fgetc(First);
+						fputc(c, Second);
+						if (prev == '\\')
+						{
+							prev = c;
+							c = fgetc(First);
+							fputc(c, Second);
+						}
+					} while (c != '"');
+				else if (c == '(')
+					j++;
+				else if (c == ')')
+					j--;
+			}
+		}
+		
+		else if (c == '{')
+			i++;
+
+		else if (c == '}')
+		{
+			i--;
+			if (i == 0 && count < Limit && reason)//мусорная функция (не в мэйне)
+			{
+				fprintf(Second, "\nvoid %s(){\n%s%s%s%s\n}", Generate[count].FunName, Generate[count].ConStart, Generate[count].ConMid, Generate[count].ConEnd, Generate[count].VarAction);
+				count++;
+			}
+		}
+
+		else if (c == '"')
+		do
+		{
+			prev = c;
+			c = fgetc(First);
+			fputc(c, Second);
+			if (prev == '\\')
+			{
+				prev = c;
+				c = fgetc(First);
+				fputc(c, Second);
+			}
+		} while (c != '"');
+		
+		else if (c == 's' && i == 0) //потенциально структура
 		{
 			char Check[7];
 			for (int i = 0; i < 7; i++) 
@@ -832,19 +952,6 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 			}
 		}
 
-		else if (c == '{') 
-			i++;
-
-		else if (c == '}')
-		{
-			i--;
-			if (i == 0 && count < Limit && reason)//мусорная функция (не в мэйне)
-			{
-				fprintf(Second, "\nvoid %s(){\n%s%s%s%s\n}", Generate[count].FunName, Generate[count].ConStart, Generate[count].ConMid, Generate[count].ConEnd, Generate[count].VarAction);
-				count++;
-			}
-		}
-
 		else if (c == '\'')
 			do
 			{
@@ -859,111 +966,6 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 				}
 			} while (c != '\'');
 
-		else if (c == '"')
-			do
-			{
-				prev = c;
-				c = fgetc(First);
-				fputc(c, Second);
-				if (prev == '\\')
-				{
-					prev = c;
-					c = fgetc(First);
-					fputc(c, Second);
-				}
-			} while (c != '"');
-
-		else if (c == '(')
-		{
-			int j = 1;
-			while (j != 0)//пока не вышли из скобки
-			{
-				c = fgetc(First);
-				fputc(c, Second);
-				if (c == '\'')
-					do
-					{
-						prev = c;
-						c = fgetc(First);
-						fputc(c, Second);
-						if (prev == '\\')
-						{
-							prev = c;
-							c = fgetc(First);
-							fputc(c, Second);
-						}
-					} while (c != '\'');
-				else if (c == '"')
-					do
-					{
-						prev = c;
-						c = fgetc(First);
-						fputc(c, Second);
-						if (prev == '\\')
-						{
-							prev = c;
-							c = fgetc(First);
-							fputc(c, Second);
-						}
-					} while (c != '"');
-				else if (c == '(') 
-					j++;
-				else if (c == ')') 
-					j--;
-			}
-		}
-
-		else if (c == ';' && i != 0) // ; внутри функции
-		{
-			while (isspace(c = fgetc(First)) && !feof(First)) 
-				fputc(c, Second);
-			char Check[5];
-			for (int i = 0; i < 5; i++) 
-				Check[i] = '\0';
-			Check[0] = c;
-			
-			for (int j = 1; strstr("else", Check) != NULL && j < 4 && !feof(First); j++) //проверка на наличие else
-			{
-				//printf("%s\n", Check);
-				c = fgetc(First);
-				Check[j] = c;
-			}
-
-			if (strcmp("else", Check) != 0)//если после ; не else, то пишем мусор
-			{
-				int VariableSet = rand() % (Limit - 1);
-				fprintf(Second, "%s%s%s%s", Generate[VariableSet].ConStart, Generate[VariableSet].ConMid, Generate[VariableSet].ConEnd, Generate[VariableSet].VarAction);
-				if (CallFunctions && count >= 0)
-				{
-					fprintf(Second, "%s();", Generate[count].FunName);
-					count--;
-				}
-			}
-			if (strchr(Check, '{') != NULL) 
-				i++;
-			if (strchr(Check, '}') != NULL)
-			{
-				i--;
-				if (i == 0 && count < Limit) 
-					bool = 1;
-			}
-			if (strchr(Check, '/') != NULL)
-				for (int k = 0; k < 5; k++)
-					if (Check[k] != '/') 
-						fputc(Check[k], Second);
-					else
-					{
-						c = '/';
-						goto Breakout;
-					}
-			fprintf(Second, "%s", Check);
-			if (bool && reason)
-			{
-				bool = 0;
-				fprintf(Second, "void %s(){%s%s%s%s;}", Generate[count].FunName, Generate[count].ConStart, Generate[count].ConMid, Generate[count].ConEnd, Generate[count].VarAction);
-				count++;
-			}
-		}
 	}
 	fclose(First);
 	fclose(Second);
