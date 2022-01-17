@@ -1259,14 +1259,15 @@ void RenameVariables()
 				} while (c != '\'');
 		}
 
-		while ((c == '_' || isalpha(c) || isdigit(c)) && !feof(Modify[0]))//переменная
+		while ((c == '_' || isalpha(c) || isdigit(c)) && !feof(Modify[0]))
 		{
 			buf[n] = c;
 			n++;
-			buf[n] = '\0';
 			buf = (unsigned char*)realloc(buf, n + 2);
 			c = fgetc(Modify[0]);
 		}
+		buf[n] = '\0';
+
 
 		if (strlen(buf) > (max - 1) || strlen(buf) < (min - 1))
 		{
