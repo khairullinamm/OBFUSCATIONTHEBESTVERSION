@@ -750,6 +750,7 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 		else break;
 
 	}
+	fseek(Second, -1, SEEK_CUR);
 	fprintf(Second, ";\n%s", Temp);
 
 	if (strcmp("struct", Temp) == 0)
