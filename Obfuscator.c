@@ -16,13 +16,13 @@ struct LIST
 //kek
 struct CyclesVariables
 {
-	char ConStart[100];//начало
-	char ConMid[100];//условие
-	char ConEnd[100];//конец
-	char VarAction[100];//операци€
-	char VarValue[100];//значени€ переменных
-	char VarName[100];//им€ сгенерированных переменных
-	char FunName[100];//им€ функции
+	char ConStart[30];//начало
+	char ConMid[30];//условие
+	char ConEnd[30];//конец
+	char VarAction[30];//операци€
+	char VarValue[30];//значени€ переменных
+	char VarName[30];//им€ сгенерированных переменных
+	char FunName[30];//им€ функции
 };
 
 void DeleteSpaces(FILE* First, FILE* Second)
@@ -31,14 +31,14 @@ void DeleteSpaces(FILE* First, FILE* Second)
 	int c, prev = '\0';
 	while ((c = fgetc(First)) != EOF && !feof(First))
 	{
-		if (c != '\n' && c != '\t' && c != ' ') 
+		if (c != '\n' && c != '\t' && c != ' ')
 			fputc(c, Second);
-		else 
+		else
 			prev = c;
 
 		if (c == '#')
 		{
-			while ((c = fgetc(First)) != '\n') 
+			while ((c = fgetc(First)) != '\n')
 				fputc(c, Second);
 			fputc(c, Second);
 		}
@@ -118,9 +118,9 @@ void DeleteSpaces(FILE* First, FILE* Second)
 				c = fgetc(First);
 				i++;
 			}
-			if (i == 1 || (prev == '\n' && i >= 2)) 
+			if (i == 1 || (prev == '\n' && i >= 2))
 				fputc(prev, Second);//переход на новую строку
-			if (!feof(First)) 
+			if (!feof(First))
 				fseek(First, -1, SEEK_CUR);
 		}
 	}
@@ -145,18 +145,28 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 			fputc(c, Second);
 		}
 
-		else if (c == '{') 
-			i++;
-		else if (c == '}') 
-			i--;
+		else if (c == '{') {
+
+			__asm {
+				inc i
+			}
+		}
+			//i++;
+		else if (c == '}') {
+
+			__asm {
+				dec i
+			}
+		}
+			//i--;
 
 		else if (i == 0 && c == 'i')//потенциально int
 		{
 			char Check[5];
-			for (int i = 0; i < 5; i++) 
+			for (int i = 0; i < 5; i++)
 				Check[i] = '\0';
 			Check[0] = c;
-			for (int j = 1; strstr("int ", Check) && j < 4; j++) 
+			for (int j = 1; strstr("int ", Check) && j < 4; j++)
 				Check[j] = fgetc(First);
 			if (strcmp("int ", Check) == 0 || strcmp("int*", Check) == 0)//если int
 			{
@@ -165,7 +175,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 				int l = 0;
 				char* TakeCare;
 				TakeCare = (char*)malloc(sizeof(char) * 2);
-				for (int j = 0; j < 2; j++) 
+				for (int j = 0; j < 2; j++)
 					TakeCare[j] = '\0';
 				while ((g = fgetc(First)) != '=' && g != '(' && g != ')' && g != ';') //функци€
 				{
@@ -173,7 +183,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 					l++;
 					TakeCare = (char*)realloc(TakeCare, sizeof(char) * (l + 2));
 					TakeCare[l] = '\0';
-					if (g == '\n') 
+					if (g == '\n')
 						k--;
 					k--;
 				}
@@ -182,7 +192,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 				{
 					fseek(First, k, SEEK_CUR);
 					fprintf(Second, "%s", Check);
-					while ((g = fgetc(First)) != ';') 
+					while ((g = fgetc(First)) != ';')
 						fputc(g, Second);
 					fputc(g, Second);
 				}
@@ -192,7 +202,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 					FILE* massiv_fail;
 					char FunNum[8] = "Fun";
 					char Number[3];
-					for (int j = 0; j < 3; j++) 
+					for (int j = 0; j < 3; j++)
 						Number[j] = '\0';
 					_itoa(fun, Number, 10);
 					fun++;
@@ -200,14 +210,14 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 					strncat(FunNum, ".c", strlen(".c"));
 					fopen_s(&massiv_fail, FunNum, "w");
 					fprintf(massiv_fail, "%s%s%c", Check, TakeCare, g);
-					while ((g = fgetc(First)) != '{') 
+					while ((g = fgetc(First)) != '{')
 						fputc(g, massiv_fail);
 					fputc(g, massiv_fail);
 					i++;
 					while (i > 0 && !feof(First))//пока внутри функции
 					{
 						g = fgetc(First);
-						if (g != EOF) 
+						if (g != EOF)
 							fputc(g, massiv_fail);
 						if (g == '\'')
 						{
@@ -251,7 +261,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 			char Check[8];
 			for (int i = 0; i < 8; i++) Check[i] = '\0';
 			Check[0] = c;
-			for (int j = 1; strstr("struct ", Check) && j < 7; j++) 
+			for (int j = 1; strstr("struct ", Check) && j < 7; j++)
 				Check[j] = fgetc(First);
 			if (strcmp("struct ", Check) == 0)
 			{
@@ -282,7 +292,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 			char Check[7];
 			for (int i = 0; i < 7; i++) Check[i] = '\0';
 			Check[0] = c;
-			for (int j = 1; strstr("float ", Check) && j < 6; j++) 
+			for (int j = 1; strstr("float ", Check) && j < 6; j++)
 				Check[j] = fgetc(First);
 			if (strcmp("float ", Check) == 0 || strcmp("float*", Check) == 0)
 			{
@@ -369,7 +379,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 		else if (i == 0 && c == 'd')//потенциально double
 		{
 			char Check[7];
-			for (int i = 0; i < 7; i++) 
+			for (int i = 0; i < 7; i++)
 				Check[i] = '\0';
 			Check[0] = c;
 			for (int j = 1; strstr("double ", Check) && j < 6; j++) Check[j] = fgetc(First);
@@ -454,7 +464,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 				TakeCare = NULL;
 			}
 		}
-		
+
 		else if (i == 0 && c == 'l') //потенциально long
 		{
 			char Check[6];
@@ -546,7 +556,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 		else if (i == 0 && c == 'c')//потенциально char
 		{
 			char Check[6];
-			for (int i = 0; i < 6; i++) 
+			for (int i = 0; i < 6; i++)
 				Check[i] = '\0';
 			Check[0] = c;
 			for (int j = 1; strstr("char ", Check) && j < 5; j++) Check[j] = fgetc(First);
@@ -635,7 +645,7 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 		else if (i == 0 && c == 'v')//потенциально void
 		{
 			char Check[6];
-			for (int i = 0; i < 6; i++) 
+			for (int i = 0; i < 6; i++)
 				Check[i] = '\0';
 			Check[0] = c;
 			for (int j = 1; strstr("void ", Check) && j < 5; j++) Check[j] = fgetc(First);
@@ -729,29 +739,35 @@ int GenerateFunctionFiles(FILE* First, FILE* Second)
 void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, int Limit)
 {
 	int count = 0;
-	char Temp[140] = {'\0'};
-	
+	char Temp[140] = { '\0' };
+
 	do
 	{
 		fprintf(Second, "%s", Temp);
-		
+
 		char c;
 		fscanf(First, "%c", &c);
 		fprintf(Second, "%c", c);
 		fscanf(First, "%s", Temp);
 	} while (!strstr(Temp, "int") && !strstr(Temp, "void") && !strstr(Temp, "char") && !strstr(Temp, "float") && !strstr(Temp, "struct"));
 
+
+
+
+
 	fprintf(Second, "int ", Temp);
-	for (int i = 0; i < Limit; i+=2)//мусорные переменные
+	for (struct CyclesVariables* p = &Generate[0]; p <= &Generate[Limit - 1]; p += 2)
 	{
-		
-		fprintf(Second, "%s = %s,", Generate[i].VarName, Generate[i].VarValue);
-		if (i + 1 < Limit)fprintf(Second, "%s = %s,", Generate[i + 1].VarName, Generate[i + 1].VarValue);
+
+		fprintf(Second, "%s = %s,", p->VarName, p->VarValue);
+		if (p + 1 < &Generate[Limit - 1])
+			fprintf(Second, "%s = %s,", (p + 1)->VarName, (p + 1)->VarValue);
 		else break;
 
 	}
 	fseek(Second, -1, SEEK_CUR);
 	fprintf(Second, ";\n%s", Temp);
+
 
 	if (strcmp("struct", Temp) == 0)
 	{
@@ -767,7 +783,7 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 				j++;
 				bool = 1;
 			}
-			else if (c == '}') 
+			else if (c == '}')
 				j--;
 		}
 	}
@@ -785,56 +801,57 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 		fputc(c, Second);
 
 		if (c == ';' && i != 0) // ; внутри функции
-	{
-		while (isspace(c = fgetc(First)) && !feof(First))
-			fputc(c, Second);
-		char Check[5];
-		for (int i = 0; i < 5; i++)
-			Check[i] = '\0';
-		Check[0] = c;
-
-		for (int j = 1; strstr("else", Check) != NULL && j < 4 && !feof(First); j++) //проверка на наличие else
 		{
-			//printf("%s\n", Check);
-			c = fgetc(First);
-			Check[j] = c;
-		}
+			while (isspace(c = fgetc(First)) && !feof(First))
+				fputc(c, Second);
+			char Check[5];
+			for (int i = 0; i < 5; i++)
+				Check[i] = '\0';
+			Check[0] = c;
 
-		if (strcmp("else", Check) != 0)//если после ; не else, то пишем мусор
-		{
-			int VariableSet = rand() % (Limit - 1);
-			fprintf(Second, "%s%s%s%s", Generate[VariableSet].ConStart, Generate[VariableSet].ConMid, Generate[VariableSet].ConEnd, Generate[VariableSet].VarAction);
-			if (CallFunctions && count >= 0)
+			for (int j = 1; strstr("else", Check) != NULL && j < 4 && !feof(First); j++) //проверка на наличие else
 			{
-				fprintf(Second, "%s();", Generate[count].FunName);
-				count--;
+				//printf("%s\n", Check);
+				c = fgetc(First);
+				Check[j] = c;
+			}
+
+			if (strcmp("else", Check) != 0)//если после ; не else, то пишем мусор
+			{
+
+				int VariableSet = rand() % (Limit - 1);
+				fprintf(Second, "%s%s%s%s", Generate[VariableSet].ConStart, Generate[VariableSet].ConMid, Generate[VariableSet].ConEnd, Generate[VariableSet].VarAction);
+				if (CallFunctions && count >= 0)
+				{
+					fprintf(Second, "%s();", Generate[count].FunName);
+					count--;
+				}
+			}
+			if (strchr(Check, '{') != NULL)
+				i++;
+			if (strchr(Check, '}') != NULL)
+			{
+				i--;
+				if (i == 0 && count < Limit)
+					bool = 1;
+			}
+			if (strchr(Check, '/') != NULL)
+				for (int k = 0; k < 5; k++)
+					if (Check[k] != '/')
+						fputc(Check[k], Second);
+					else
+					{
+						c = '/';
+						goto Breakout;
+					}
+			fprintf(Second, "%s", Check);
+			if (bool&& reason)
+			{
+				bool = 0;
+				fprintf(Second, "void %s(){%s%s%s%s;}", Generate[count].FunName, Generate[count].ConStart, Generate[count].ConMid, Generate[count].ConEnd, Generate[count].VarAction);
+				count++;
 			}
 		}
-		if (strchr(Check, '{') != NULL)
-			i++;
-		if (strchr(Check, '}') != NULL)
-		{
-			i--;
-			if (i == 0 && count < Limit)
-				bool = 1;
-		}
-		if (strchr(Check, '/') != NULL)
-			for (int k = 0; k < 5; k++)
-				if (Check[k] != '/')
-					fputc(Check[k], Second);
-				else
-				{
-					c = '/';
-					goto Breakout;
-				}
-		fprintf(Second, "%s", Check);
-		if (bool&& reason)
-		{
-			bool = 0;
-			fprintf(Second, "void %s(){%s%s%s%s;}", Generate[count].FunName, Generate[count].ConStart, Generate[count].ConMid, Generate[count].ConEnd, Generate[count].VarAction);
-			count++;
-		}
-	}
 
 		else if (c == '(')
 		{
@@ -875,7 +892,7 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 					j--;
 			}
 		}
-		
+
 		else if (c == '{')
 			i++;
 
@@ -890,23 +907,23 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 		}
 
 		else if (c == '"')
-		do
-		{
-			prev = c;
-			c = fgetc(First);
-			fputc(c, Second);
-			if (prev == '\\')
+			do
 			{
 				prev = c;
 				c = fgetc(First);
 				fputc(c, Second);
-			}
-		} while (c != '"');
-		
+				if (prev == '\\')
+				{
+					prev = c;
+					c = fgetc(First);
+					fputc(c, Second);
+				}
+			} while (c != '"');
+
 		else if (c == 's' && i == 0) //потенциально структура
 		{
 			char Check[7];
-			for (int i = 0; i < 7; i++) 
+			for (int i = 0; i < 7; i++)
 				Check[i] = '\0';
 			Check[0] = c;
 			for (int j = 1; strstr("struct", Check) != NULL && j < 6 && !feof(First); j++)
@@ -928,7 +945,7 @@ void WriteCycles(FILE* First, FILE* Second, struct CyclesVariables* Generate, in
 						j++;
 						bool = 1;
 					}
-					else if (c == '}') 
+					else if (c == '}')
 						j--;
 				}
 			}
@@ -978,17 +995,32 @@ void GenerateCycles(int j, struct CyclesVariables* Generate)
 	int l;
 	for (int i = 0; i < j; i++)
 	{
-		int Rand = rand() % 50 + 25;
-		for (int j = 0; j < 100; j++)
-		{
-			Generate[i].ConStart[j] = '\0';
-			Generate[i].ConMid[j] = '\0';
-			Generate[i].ConEnd[j] = '\0';
-			Generate[i].VarAction[j] = '\0';
-			Generate[i].VarValue[j] = '\0';
-			Generate[i].VarName[j] = '\0';
-			Generate[i].FunName[j] = '\0';
+		int Rand = rand() % 50;
+
+		__asm {
+
+			mov eax, Rand
+			add eax, 25
+			mov Rand, eax
+
 		}
+
+		//printf("%d ", Rand);
+
+		memset(Generate[i].ConStart, '\0', 30 * sizeof(char));
+
+		memset(Generate[i].ConMid, '\0', 30 * sizeof(char));
+
+		memset(Generate[i].ConEnd, '\0', 30 * sizeof(char));
+
+		memset(Generate[i].VarAction, '\0', 30 * sizeof(char));
+
+		memset(Generate[i].VarValue, '\0', 30 * sizeof(char));
+
+		memset(Generate[i].VarName, '\0', 30 * sizeof(char));
+
+		memset(Generate[i].FunName, '\0', 30 * sizeof(char));
+
 
 
 		//√енерируем цикл 
@@ -1018,11 +1050,11 @@ void GenerateCycles(int j, struct CyclesVariables* Generate)
 			int p = rand() % 532 + 67;
 			if (p % 3 == 0)
 				c = rand() % 25 + 65;
-			else if (p % 3 == 1) 
+			else if (p % 3 == 1)
 				c = rand() % 25 + 97;
-			else if (l != 0) 
+			else if (l != 0)
 				c = rand() % 9 + 48;
-			else 
+			else
 				c = '_';
 			Generate[i].VarName[l] = c;
 		}
@@ -1051,15 +1083,15 @@ void GenerateCycles(int j, struct CyclesVariables* Generate)
 			strcat(Generate[i].ConMid, Generate[i].VarName);
 			strcat(Generate[i].ConMid, "<=");
 			char Temp[6];
-			for (int j = 0; j < 6; j++) 
+			for (int j = 0; j < 6; j++)
 				Temp[j] = '\0';
 			_itoa(Length, Temp, 10);
 			strcat(Generate[i].ConMid, Temp);
 			strcat(Generate[i].VarAction, Generate[i].VarName);
 			Rand = rand() % 2;
-			if (Rand == 0) 
+			if (Rand == 0)
 				strcat(Generate[i].VarAction, "++;");
-			else 
+			else
 				strcat(Generate[i].VarAction, "*=10;");
 		}
 		else
@@ -1072,9 +1104,9 @@ void GenerateCycles(int j, struct CyclesVariables* Generate)
 			strcat(Generate[i].ConMid, Temp);
 			strcat(Generate[i].VarAction, Generate[i].VarName);
 			Rand = rand() % 2 + 0;
-			if (Rand == 0) 
+			if (Rand == 0)
 				strcat(Generate[i].VarAction, "--;");
-			else 
+			else
 				strcat(Generate[i].VarAction, "/=10;");
 		}
 	}
@@ -1082,9 +1114,14 @@ void GenerateCycles(int j, struct CyclesVariables* Generate)
 
 int FunctionGetMax(int* ar, int lines)//максимальна€ длинна переменной
 {
-	int max = ar[0];
-	for (int i = 1; i < lines; i++)
-		if (ar[i] > max) max = ar[i];
+
+	int a = lines;
+	int* b = ar;
+	int max = b[0];
+
+	for (int i = 1; i < a; i++)
+		if (b[i] > max) max = b[i];
+
 	return max;
 }
 
@@ -1119,10 +1156,10 @@ int CountLines(FILE* File)//считаем строки
 	int lines = 1;
 	rewind(File); //указатель положени€ файла в начальное положение
 	unsigned char c = fgetc(File);
-	if (File == NULL) 
+	if (File == NULL)
 		return 0;
 	while (!feof(File))
-		if (c = fgetc(File) == '\n') 
+		if (c = fgetc(File) == '\n')
 			lines++;
 	if (ferror(File))
 	{
@@ -1203,8 +1240,8 @@ void RenameVariables()
 	fclose(Alphabet[1]);
 	free(Alphabet);
 	Alphabet = NULL;
-//	remove("Before.txt");
-	//remove("After.txt");
+	//	remove("Before.txt");
+		//remove("After.txt");
 
 	max = FunctionGetMax(A, lines);
 	min = FunctionGetMin(A, lines);
@@ -1305,10 +1342,10 @@ void CreateVariables(FILE* Read)
 	fopen_s(&Before, "Before.txt", "w");
 	fopen_s(&After, "After.txt", "w");
 	int FlagFunction = 0; //внутри или вне объ€влени€ переменных
-	int length = 0; 
-	int c ,i; //с - читает файл, i - провер€ет есть пробел или * после типа функции
-	char* massiv_fail = (char*)malloc(1*sizeof(char));
-	
+	int length = 0;
+	int c, i; //с - читает файл, i - провер€ет есть пробел или * после типа функции
+	char* massiv_fail = (char*)malloc(1 * sizeof(char));
+
 	for (length; (c = fgetc(Read)) != EOF; length++) //записываем файл в массив и считаем длину 
 	{
 		massiv_fail = (char*)realloc(massiv_fail, length + 1);
@@ -1318,7 +1355,7 @@ void CreateVariables(FILE* Read)
 
 	int bool = 0; //проверка на нахождение слова
 	for (unsigned long long index = 0; index < length; index++)
-	
+
 	{
 	DeadOutside:
 		if (massiv_fail[index] == 'i' && massiv_fail[index + 1] == 'n' && massiv_fail[index + 2] == 't')
@@ -1356,7 +1393,7 @@ void CreateVariables(FILE* Read)
 				}
 				fputc('\n', Before);
 				Strings++;
-				while (strchr("(),;{}", massiv_fail[index]) == NULL) 
+				while (strchr("(),;{}", massiv_fail[index]) == NULL)
 					index++;
 
 				if (massiv_fail[index] == '(') FlagFunction = 1; //внутри объ€влени€ переменных
@@ -1392,10 +1429,14 @@ void CreateVariables(FILE* Read)
 		for (int j = 0; j < Length; j++)
 		{
 			unsigned char c;
-			if (j % 3 == 0) //заглавные буквы 
+			if (j % 3 == 0) { //заглавные буквы 
+
+
 				c = rand() % 25 + 65;
+
+			}
 			else if (j % 3 == 1) //строчные буквы
-				c = rand() % 25 + 97; 
+				c = rand() % 25 + 97;
 			else //цифры 
 				c = rand() % 9 + 48;
 			fputc(c, After);
@@ -1426,9 +1467,9 @@ void DeleteCom(FILE* input, FILE* output)
 {
 	int symbol, future, t = 0, k = 0;
 	symbol = fgetc(input);
-	if (symbol != EOF) 
+	if (symbol != EOF)
 	{
-		while ((future = fgetc(input)) != EOF) 
+		while ((future = fgetc(input)) != EOF)
 		{
 			//комментарии типа - //
 			if ((symbol == '/') && (future == '/')) //если символы //
@@ -1438,7 +1479,7 @@ void DeleteCom(FILE* input, FILE* output)
 				{
 					symbol = future;
 					future = fgetc(input);
-					if (future == EOF) 
+					if (future == EOF)
 						break;
 					if (future == '\n' && symbol == '\\') //если перенос комментари€
 					{
@@ -1446,7 +1487,7 @@ void DeleteCom(FILE* input, FILE* output)
 						future = fgetc(input);
 					}
 				}
-				if (future == EOF) 
+				if (future == EOF)
 					break;
 				fputc(future, output);
 				future = fgetc(input);
@@ -1461,16 +1502,16 @@ void DeleteCom(FILE* input, FILE* output)
 				fputc(symbol, output);
 				symbol = future;
 				future = fgetc(input);
-				if (future == '\\') 
-				{ 
-					while (future == '\\') 
+				if (future == '\\')
+				{
+					while (future == '\\')
 					{
 						k++;
 						fputc(symbol, output);
 						symbol = future;
 						future = fgetc(input);
 					}
-					if (k % 2 == 1) 
+					if (k % 2 == 1)
 					{
 						fputc(symbol, output);
 						symbol = future;
@@ -1478,15 +1519,15 @@ void DeleteCom(FILE* input, FILE* output)
 						k = 0;
 					}
 				}
-				while (future != '"') 
+				while (future != '"')
 				{
 					if (future != '\\')
-					{	
+					{
 						fputc(symbol, output);
 						symbol = future;
 						future = fgetc(input);
 					}
-					else 
+					else
 					{
 						while (future == '\\')
 						{
@@ -1495,7 +1536,7 @@ void DeleteCom(FILE* input, FILE* output)
 							symbol = future;
 							future = fgetc(input);
 						}
-						if (k % 2 == 1) 
+						if (k % 2 == 1)
 						{
 							fputc(symbol, output);
 							symbol = future;
@@ -1509,29 +1550,29 @@ void DeleteCom(FILE* input, FILE* output)
 			}
 
 			//комментарии типа - /**/
-			else if ((symbol == '/') && (future == '*')) 
+			else if ((symbol == '/') && (future == '*'))
 			{
 				t = 1;
 				symbol = future;
 				future = fgetc(input);
 				symbol = future;
 				future = fgetc(input);
-				while (symbol != '*' || future != '/') 
+				while (symbol != '*' || future != '/')
 				{
 					symbol = future;
 					future = fgetc(input);
-					if (future == EOF) 
+					if (future == EOF)
 						break;
 				}
 				symbol = future;
 				future = fgetc(input);
-				if (future == EOF) 
+				if (future == EOF)
 					break;
 				symbol = future;
 				t = 0;
 			}
 
-			else 
+			else
 			{
 				fputc(symbol, output);
 				symbol = future;
@@ -1545,7 +1586,7 @@ void DeleteCom(FILE* input, FILE* output)
 	fclose(output);
 }
 
-int main() 
+int main()
 {
 	FILE* First;
 	FILE* Second;
@@ -1555,7 +1596,7 @@ int main()
 	srand(time(NULL)); //обновление rand() при каждом запуске программы
 
 	fopen_s(&ConfigFile, "Config.txt", "r");
-	for (int i = 0; i < 5; i++) 
+	for (int i = 0; i < 5; i++)
 		fscanf(ConfigFile, "%d", &ConfigData[i]);//читаем параметры
 	fclose(ConfigFile);
 
@@ -1590,7 +1631,17 @@ int main()
 	{
 		fopen_s(&First, "Draft.c", "r");
 		fopen_s(&Second, "Final.c", "w");
-		int j = rand() % 10 + 20; //количество мусора
+		int j = rand() % 10; //количество мусора
+
+		__asm {
+
+			mov eax, j
+			add eax, 20
+			mov j, eax
+
+		}
+		//printf("%d ", j);
+
 		struct CyclesVariables* Generate;
 		Generate = (struct CyclesVariables*)malloc(sizeof(struct CyclesVariables) * j);
 		GenerateCycles(j, Generate);
@@ -1637,17 +1688,17 @@ int main()
 			fclose(Second);
 		}
 
-	/*	for (int i = 0; i < Count; i++)//пор€док следовани€ функций 
-		{
-			Random[i] = rand() % Count;
-			for (int j = 0; j < Count; j++) //сравнивает не по€вились ли одинаковые числа
-				if (Random[i] == Random[j] && j != i)
-				{
-					j = -1;
-					Random[i] = rand() % Count;
-				}
-		}
-		*/
+		/*	for (int i = 0; i < Count; i++)//пор€док следовани€ функций
+			{
+				Random[i] = rand() % Count;
+				for (int j = 0; j < Count; j++) //сравнивает не по€вились ли одинаковые числа
+					if (Random[i] == Random[j] && j != i)
+					{
+						j = -1;
+						Random[i] = rand() % Count;
+					}
+			}
+			*/
 
 		srand(time(NULL));
 
@@ -1668,7 +1719,7 @@ int main()
 			//выбирает рандмный файл с функцией и записывает функцию в draft
 			char FunNum[8] = "Fun";
 			char Number[3];
-			for (int j = 0; j < 3; j++) 
+			for (int j = 0; j < 3; j++)
 				Number[j] = '\0';
 			_itoa(Random[i], Number, 10);
 			strncat(FunNum, Number, strlen(Number));
